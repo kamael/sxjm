@@ -6,14 +6,14 @@ function p = p_gongnuan( t_house )
     p_work = 8400 * piece
     
     if is_gongnuan_on
-        if t_house > 18     %供暖的时候，如果温度达到了 18 度，停止供暖
+        if t_house > 24     %供暖的时候，如果温度达到了 18 度，停止供暖
             is_gongnuan_on = false
             p = 0
         else                %否则继续供暖
             p = p_work
         end
     else
-        if t_house < 5      %不供暖的时候，如果温度低于 5 度，开始供暖
+        if t_house < 10     %不供暖的时候，如果温度低于 5 度，开始供暖
             is_gongnuan_on = true
             p = p_work
         else

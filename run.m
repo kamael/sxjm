@@ -1,3 +1,5 @@
+clear
+
 t_house = 2         %房间的初始温度
 t_sunroom = 2       %太阳能房的初始温度
 t_of_day = get_t_of_day()
@@ -46,8 +48,11 @@ global piece            %程序中使用的时间片，比如 piece = 36， 即 
 t_house_a_day = []      %房子一天各个时间点的温度，用于绘图
 t_sunroom_a_day = []    %太阳房一天各个时间点的温度，用于绘图
 
+global eg
 eg = 0.1                %一小时分成的份数的倒数，比如 eg = 0.1，即一小时分为10个单元
 piece = 3600 * eg       %每份的秒数
+
+e_max_sunroom_t = 1305.48 * sunroom_v * 50
 
 i = 0
 for v = 0:eg:24
@@ -72,6 +77,24 @@ for v = 0:eg:24
                 - p_qiang(sunroom_surface_out, t_sunroom - t_out)   ...
                 - p_qiang(house_surface_sunroom, t_sunroom - t_house)   ...
                 - p_fan(t_sunroom, t_sunroom - t_house)
-    
+   
+    %限制太阳能房最高温度 50 度
+    if e_sunroom > e_max_sunroom_t
+        e_sunroom = e_max_sunroom_t
+    end     
 end
+
+%绘图 
+v = 0:eg:24
+hold on
+plot(v, t_of_day)
+plot(v, t_house_a_day)
+plot(v, t_sunroom_a_day)
+xlabel('时间'),ylabel('温度'),title('温度对比');
+legend('室外温度曲线', '独立房间温度曲线', '太阳房温度曲线')
+
+
+
+
+
 
