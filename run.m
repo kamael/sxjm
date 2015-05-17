@@ -2,22 +2,30 @@ t_house = 2         %房间的初始温度
 t_sunroom = 2       %太阳能房的初始温度
 t_of_day = get_t_of_day()
 
+%独立房间长，宽，高
 house_w = 7
 house_l = 10
 house_h = 3
-house_surface_out = house_w * house_l + 2 * house_w * house_h
-                        + house_l * house_h
+
 %房间墙壁（包括屋顶）散热面积
+house_surface_out = house_w * house_l + 2 * house_w * house_h ... 
+    + house_l * house_h
+
+%房子的体积
 house_v = house_w * house_l * house_h
 
-house_surface_sunroom = house_l * house_h
 %房子与太阳房共面的面积
+house_surface_sunroom = house_l * house_h
 
+%太阳能房的长，宽，高
 sunroom_w = 3
 sunroom_l = 10
 sunroom_h = 3
-sunroom_surface_out = sunroom_w * sunroom_l + 2 * sunroom_w * sunroom_h
-                        + sunroom_l * sunroom_h
+
+%太阳能房墙壁面积
+sunroom_surface_out = sunroom_w * sunroom_l + 2 * sunroom_w * sunroom_h ...
+    + sunroom_l * sunroom_h
+%太阳能房体积
 sunroom_v = sunroom_h * sunroom_w * sunroom_l
 
 
@@ -26,28 +34,29 @@ sunroom_v = sunroom_h * sunroom_w * sunroom_l
 e_house = 1305.48 * house_v * t_house               %房子的热能
 e_sunroom = 1305.48 * sunroom_v * t_sunroom         %太阳能房的热能
 
-max_e_sunroom = 1305.48 * sunroom_v * 50
 
-global is_fan_on
-global is_gongnuan_on
+global is_fan_on        %风扇是否开关
+global is_gongnuan_on   %锅炉是否开关
 
 is_fan_on = false
 is_gongnuan_on = false
-global piece
 
-t_house_a_day = []
-t_sunroom_a_day = []
+global piece            %程序中使用的时间片，比如 piece = 36， 即 36秒为一单元
 
-eg = 0.1
-piece = 3600 * eg
+t_house_a_day = []      %房子一天各个时间点的温度，用于绘图
+t_sunroom_a_day = []    %太阳房一天各个时间点的温度，用于绘图
+
+eg = 0.1                %一小时分成的份数的倒数，比如 eg = 0.1，即一小时分为10个单元
+piece = 3600 * eg       %每份的秒数
+
 i = 0
 for v = 0:eg:24
 %计算各个时刻点独立房间，太阳能房间的温度
 %时刻单位为 36秒
     i = i + 1
-    t_out = t_of_day(i)
-    t_house = e_house / (1305.48 * house_v)
-    t_sunroom = e_sunroom / (1305.48 * sunroom_v)
+    t_out = t_of_day(i)                             %外界温度
+    t_house = e_house / (1305.48 * house_v)         %房间内温度
+    t_sunroom = e_sunroom / (1305.48 * sunroom_v)   %太阳房温度
     
     t_house_a_day(i) = t_house
     t_sunroom_a_day(i) = t_sunroom
@@ -63,10 +72,6 @@ for v = 0:eg:24
                 - p_qiang(sunroom_surface_out, t_sunroom - t_out)   ...
                 - p_qiang(house_surface_sunroom, t_sunroom - t_house)   ...
                 - p_fan(t_sunroom, t_sunroom - t_house)
-    
-   if e_sunroom > max_e_sunroom
-       e_sunroom = max_e_sunroom
-   end
     
 end
 

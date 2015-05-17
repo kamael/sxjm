@@ -8,6 +8,7 @@ function p = p_gongnuan( t_house )
     if is_gongnuan_on
         if t_house > 18     %供暖的时候，如果温度达到了 18 度，停止供暖
             is_gongnuan_on = false
+            p = 0
         else                %否则继续供暖
             p = p_work
         end
