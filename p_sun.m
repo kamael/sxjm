@@ -3,8 +3,8 @@ function p = p_sun( time )
     global piece
 
     if time > 9 & time < 17
-        p = 4000 * piece
-        %   0   1000     4000    7000
+        p = 5553.05 * piece
+        %   0   1000     5553.05    7000
     else
         p = 0
     end

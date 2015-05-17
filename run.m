@@ -9,9 +9,8 @@ house_w = 7
 house_l = 10
 house_h = 3
 
-%房间墙壁（包括屋顶）散热面积
-house_surface_out = house_w * house_l + 2 * house_w * house_h ... 
-    + house_l * house_h
+%房间墙壁散热面积
+house_surface_out = 2 * house_w * house_h + house_l * house_h
 
 %房子的体积
 house_v = house_w * house_l * house_h
@@ -25,8 +24,7 @@ sunroom_l = 10
 sunroom_h = 3
 
 %太阳能房墙壁面积
-sunroom_surface_out = sunroom_w * sunroom_l + 2 * sunroom_w * sunroom_h ...
-    + sunroom_l * sunroom_h
+sunroom_surface_out = 2 * sunroom_w * sunroom_h + sunroom_l * sunroom_h
 %太阳能房体积
 sunroom_v = sunroom_h * sunroom_w * sunroom_l
 
@@ -49,7 +47,7 @@ t_house_a_day = []      %房子一天各个时间点的温度，用于绘图
 t_sunroom_a_day = []    %太阳房一天各个时间点的温度，用于绘图
 
 global eg
-eg = 0.1                %一小时分成的份数的倒数，比如 eg = 0.1，即一小时分为10个单元
+eg = 0.01                %一小时分成的份数的倒数，比如 eg = 0.1，即一小时分为10个单元
 piece = 3600 * eg       %每份的秒数
 
 e_max_sunroom_t = 1305.48 * sunroom_v * 50
@@ -90,6 +88,9 @@ hold on
 plot(v, t_of_day)
 plot(v, t_house_a_day)
 plot(v, t_sunroom_a_day)
+axis([0 24 -10 50])
+set(gca,'XTick',0:1:24);
+set(gca,'YTick',-10:10:50);
 xlabel('时间'),ylabel('温度'),title('温度对比');
 legend('室外温度曲线', '独立房间温度曲线', '太阳房温度曲线')
 
