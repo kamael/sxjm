@@ -2,8 +2,9 @@ function p = p_gongnuan( t_house )
 %输入房间温度， 输出锅炉每 36秒 发出的热量
     global is_gongnuan_on
     global piece
+    global p_guolu
     p = 0
-    p_work = 8400 * piece
+    p_work = p_guolu * piece
     
     if is_gongnuan_on
         if t_house > 24     %供暖的时候，如果温度达到了 18 度，停止供暖

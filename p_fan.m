@@ -2,8 +2,9 @@ function p = p_fan( t_sunroom, d_t)
 %输入太阳房温度, 温度差， 输出风扇每 36秒 运送的热量
     global is_fan_on    
     global piece
+    global p_dian
     p = 0
-    p_work = 145 * piece * d_t
+    p_work = 1.81 * 2 * p_dian * piece * d_t
     
     
     max_t = 32

@@ -16,7 +16,7 @@ house_surface_out = 2 * house_w * house_h + house_l * house_h
 house_v = house_w * house_l * house_h
 
 %房子与太阳房共面的面积
-house_surface_sunroom = house_l * house_h
+house_surface_sunroom = house_l * house_h / 2
 
 %太阳能房的长，宽，高
 sunroom_w = 3
@@ -38,6 +38,9 @@ e_sunroom = 1305.48 * sunroom_v * t_sunroom         %太阳能房的热能
 global is_fan_on        %风扇是否开关
 global is_gongnuan_on   %锅炉是否开关
 
+
+
+
 is_fan_on = false
 is_gongnuan_on = false
 
@@ -52,6 +55,16 @@ piece = 3600 * eg       %每份的秒数
 
 e_max_sunroom_t = 1305.48 * sunroom_v * 50
 
+global p_dian           %风扇电功率
+global p_guolu          %锅炉功率
+
+p_dian = 80
+p_guolu = 8400
+
+all_t_fan = 0           %凤扇总运行时间
+all_t_guolu = 0         %锅炉总运行时间
+
+
 i = 0
 for v = 0:eg:24
 %计算各个时刻点独立房间，太阳能房间的温度
@@ -63,6 +76,7 @@ for v = 0:eg:24
     
     t_house_a_day(i) = t_house
     t_sunroom_a_day(i) = t_sunroom
+    
     
     %房子能量的总量的变化
     e_house = e_house + p_gongnuan(t_house) ...
@@ -79,11 +93,21 @@ for v = 0:eg:24
     %限制太阳能房最高温度 50 度
     if e_sunroom > e_max_sunroom_t
         e_sunroom = e_max_sunroom_t
-    end     
+    end
+    
+    if is_fan_on
+        all_t_fan = all_t_fan + piece
+    end
+    if is_gongnuan_on
+        all_t_guolu = all_t_guolu + piece
+    end
+        
+    
 end
 
 %绘图 
 v = 0:eg:24
+
 hold on
 plot(v, t_of_day)
 plot(v, t_house_a_day)
@@ -93,6 +117,14 @@ set(gca,'XTick',0:1:24);
 set(gca,'YTick',-10:10:50);
 xlabel('时间'),ylabel('温度'),title('温度对比');
 legend('室外温度曲线', '独立房间温度曲线', '太阳房温度曲线')
+
+
+text(2, 45, ['电风扇功率：', num2str(p_dian)])
+text(2, 42, ['电风扇运行时长：', num2str(all_t_fan / 3600)])
+text(2, 39, ['锅炉运行时长：', num2str(all_t_guolu / 3600)])
+text(2, 36, ['总费用：', num2str(all_t_fan * p_dian / 7200000 ...
+    + all_t_guolu * p_guolu * 2.28 / 36000000)])
+
 
 
 
